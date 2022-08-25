@@ -1,9 +1,10 @@
 from django.contrib.auth import get_user_model
+from django.shortcuts import get_object_or_404
 from djoser.serializers import UserCreateSerializer, UserSerializer
 from drf_extra_fields.fields import Base64ImageField
 from rest_framework import serializers
 
-from recipes.models import Ingredient, Recipe, RecipeIngredient, RecipeTag, Tag
+from recipes.models import Ingredient, Recipe, RecipeIngredient, Tag
 
 User = get_user_model()
 
@@ -71,29 +72,65 @@ class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
             'tags', 'ingredients', 'cooking_time'
         )
 
-    @classmethod
-    def recipe_ingredient_create(self, recipe, ingredients):
-        for ingredient in ingredients:
-            RecipeIngredient.objects.get_or_create(
-                recipe=recipe,
-                ingredients=ingredient['id'],
-                amount=ingredient['amount']
+    def validate(self, data):
+        if data['name'] == data['text']:
+            raise serializers.ValidationError(
+                'The value of "name" field could '
+                'not be the same as the value of "text" field.'
             )
+        if self.context.get('request').method == 'POST':
+            if Recipe.objects.filter(
+                author=data['author'],
+                name=data['name']
+            ).exists():
+                return serializers.ValidationError(
+                    'You\'ve already created the recipe with this name.'
+                )
+        return data
+
+    def validate_tags(self, value):
+        if not value:
+            raise serializers.ValidationError(
+                '"Tag" field must be filled out.'
+            )
+        for tag in value:
+            if value.count(tag) > 1:
+                raise serializers.ValidationError(
+                    f'You have repeated ingredients: {tag}'
+                )
+        return value
+
+    def validate_ingredients(self, value):
+        if not value:
+            raise serializers.ValidationError(
+                '"Ingredients" field must be filled out.'
+            )
+        for ingredient in value:
+            if value.count(ingredient) > 1:
+                raise serializers.ValidationError(
+                    f'You have repeated ingredients: {ingredient}'
+                )
+        return value
+
+    @classmethod
+    def recipe_ingredient_tag_create(self, recipe, tags, ingredients):
+        recipe_list = [RecipeIngredient(
+            recipe=recipe,
+            ingredients=get_object_or_404(Ingredient, id=ingredient.id),
+            amount=ingredient['amount']
+        ) for ingredient in ingredients]
+        RecipeIngredient.objects.bulk_create(recipe_list)
+        recipe.tags.set(tags)
 
     def create(self, validated_data):
         ingredients = validated_data.get('ingredients')
         tags = validated_data.get('tags')
-        amount = validated_data.get('amount')
         recipe = Recipe.objects.create(**validated_data)
-        for ingredient, tag in ingredients, tags:
-            current_ingredient = Ingredient.objects.get(id=ingredient.id)
-            current_tag = Ingredient.objects.get(id=tag.id)
-            RecipeIngredient.objects.create(
-                recipe=recipe,
-                ingredient=current_ingredient,
-                amount=amount
-            )
-            RecipeTag.objects.create(recipe=recipe, tag=current_tag)
+        self.recipe_ingredient_tag_create(
+            recipe=recipe,
+            tags=tags,
+            ingredients=ingredients
+        )
         return recipe
 
     def update(self, instance, validated_data):
@@ -106,19 +143,14 @@ class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
         instance.cooking_time = validated_data.get(
             'cooking_time', instance.cooking_time
         )
-        if tags:
-            for tag in tags:
-                RecipeTag.objects.create(
-                    recipe=instance.id,
-                    tag=tag.id
-                )
-        if ingredients:
-            for ingredient in ingredients:
-                RecipeIngredient.objects.get_or_create(
-                    recipe=instance.id,
-                    ingredients=ingredient.id,
-                    amount=ingredient.amount
-                )
+        instance.ingredients.clear()
+        self.recipe_ingredient_tag_create(
+            recipe=instance,
+            tags=tags,
+            ingredients=ingredients
+        )
+        instance.save()
+        return instance
 
 
 class CustomUserSerializer(UserSerializer):
@@ -176,6 +208,9 @@ class SubscriptionSerializer(CustomUserSerializer):
     recipes = RecipeShortSerializer(many=True, source='recipes')
     recipes_count = serializers.SerializerMethodField()
     is_subscribed = serializers.SerializerMethodField()
+    recipes_count = serializers.IntegerField(
+        source='recipes.count'
+    )
 
     class Meta:
         model = User
@@ -190,9 +225,6 @@ class SubscriptionSerializer(CustomUserSerializer):
             'recipes_count',
         )
         read_only_fields = '__all__'
-
-    def get_recipes_count(self, obj):
-        return obj.recipes.count()
 
     def get_is_subscribed(self, obj):
         user = self.context.get('request').user

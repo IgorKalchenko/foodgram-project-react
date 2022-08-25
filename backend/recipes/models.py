@@ -85,16 +85,6 @@ class Recipe(models.Model):
         help_text='Время приготовления в минутах',
         validators=(MinValueValidator(1),)
     )
-    # is_favorited = models.ManyToManyField(
-    #     verbose_name='Избранное',
-    #     related_name='is_favorited',
-    #     to=User
-    # )
-    # is_in_shopping_cart = models.ManyToManyField(
-    #     verbose_name='Список покупок',
-    #     related_name='is_in_shopping_cart',
-    #     to=User
-    # )
     pub_date = models.DateTimeField(
         verbose_name='Дата публикации',
         auto_now_add=True
