@@ -86,31 +86,25 @@ class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
                 return serializers.ValidationError(
                     'You\'ve already created the recipe with this name.'
                 )
-        return data
-
-    def validate_tags(self, value):
-        if not value:
+        if not data['tags']:
             raise serializers.ValidationError(
                 '"Tag" field must be filled out.'
             )
-        for tag in value:
-            if value.count(tag) > 1:
+        for tag in data['tags']:
+            if data['tags'].count(tag) > 1:
                 raise serializers.ValidationError(
-                    f'You have repeated ingredients: {tag}'
+                    f'You have repeated tags: {tag}'
                 )
-        return value
-
-    def validate_ingredients(self, value):
-        if not value:
+        if not data['ingredients']:
             raise serializers.ValidationError(
                 '"Ingredients" field must be filled out.'
             )
-        for ingredient in value:
-            if value.count(ingredient) > 1:
+        for ingredient in data['ingredients']:
+            if data['ingredients'].count(ingredient) > 1:
                 raise serializers.ValidationError(
                     f'You have repeated ingredients: {ingredient}'
                 )
-        return value
+        return data
 
     @classmethod
     def recipe_ingredient_tag_create(self, recipe, tags, ingredients):
