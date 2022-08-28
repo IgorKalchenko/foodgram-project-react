@@ -106,7 +106,7 @@ class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
         return data
 
     @classmethod
-    def recipe_ingredient_tag_create(self, recipe, tags, ingredients):
+    def recipe_ingredient_tag_create(cls, recipe, tags, ingredients):
         recipe_list = [RecipeIngredient(
             recipe=recipe,
             ingredients=get_object_or_404(Ingredient, id=ingredient.id),
