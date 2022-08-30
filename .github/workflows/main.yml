@@ -79,11 +79,13 @@ jobs:
         key: ${{ secrets.SSH_KEY }}
         passphrase: ${{ secrets.PASSPHRASE }}
         script: |
-            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/foodgram_back:latest
-            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/foodgram_front:latest
             sudo docker compose stop
             sudo docker compose rm -f backend
             sudo docker compose rm -f frontend
+            sudo docker rmi ${{ secrets.DOCKER_USERNAME }}/foodgram_front
+            sudo docker rmi ${{ secrets.DOCKER_USERNAME }}/foodgram_back
+            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/foodgram_back:latest
+            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/foodgram_front:latest
             touch .env
             echo -n > .env
             echo DB_ENGINE=${{ secrets.DB_ENGINE }} >> .env
