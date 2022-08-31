@@ -1,7 +1,7 @@
 version: '3.8'
 services:
   frontend:
-    image: igorkalchenko/foodgram_front:latest
+    image: listener123/foodgram-frontend:latest
     volumes:
       - ../frontend/:/app/result_build/
   db:
