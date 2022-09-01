@@ -199,7 +199,6 @@ class SubscriptionSerializer(CustomUserSerializer):
     Сериализатор для вывода авторов, на которых подписан текущий пользователь.
     """
     recipes = RecipeShortSerializer(many=True, source='recipes')
-    recipes_count = serializers.SerializerMethodField()
     is_subscribed = serializers.SerializerMethodField()
     recipes_count = serializers.IntegerField(
         source='recipes.count'
