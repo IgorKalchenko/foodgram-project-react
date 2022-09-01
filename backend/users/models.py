@@ -1,15 +1,8 @@
-from django.contrib.auth.models import AbstractUser, UserManager
+from django.contrib.auth.models import AbstractUser
 from django.db import models
-from django.db.models import Q
 from django.utils.translation import gettext_lazy as _
 
-
-class CustomUserManager(UserManager):
-
-    def get_by_natural_key(self, username):
-        return self.get(
-            Q(**{self.model.EMAIL_FIELD: username})
-        )
+from managers import CustomUserManager
 
 
 class CustomUser(AbstractUser):
