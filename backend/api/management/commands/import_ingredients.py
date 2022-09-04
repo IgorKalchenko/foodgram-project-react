@@ -9,6 +9,9 @@ from recipes.models import Ingredient
 class Command(BaseCommand):
     help = 'Import data from csv-file.'
 
+    def add_arguments(self, parser):
+        parser.add_argument('file_path', type=str)
+
     def handle(self, *args, **options):
         answer = input(
             'Do you want to clean up the Ingredients database? [Y/N]: '
@@ -20,9 +23,7 @@ class Command(BaseCommand):
         else:
             return 'Invalid value.'
         with open(
-            os.path.join(
-                settings.STATIC_ROOT, 'backend/data', 'ingredients.csv'
-            ), 'r', encoding='utf-8'
+            options['file_path'], 'r', encoding='utf-8'
         ) as csv_file:
             reader = csv.DictReader(csv_file)
             Ingredient.objects.bulk_create(
