@@ -20,9 +20,10 @@ class Command(BaseCommand):
         else:
             return 'Invalid value.'
         with open(
-            os.path.join(settings.STATIC_ROOT, 'backend.data', 'ingredients.csv'),
-            'r', encoding='utf-8'
-            ) as csv_file:
+            os.path.join(
+                settings.STATIC_ROOT, 'backend.data', 'ingredients.csv'
+            ), 'r', encoding='utf-8'
+        ) as csv_file:
             reader = csv.DictReader(csv_file)
             Ingredient.objects.bulk_create(
                 Ingredient(**data) for data in reader
