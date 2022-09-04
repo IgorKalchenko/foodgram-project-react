@@ -21,7 +21,7 @@ class Command(BaseCommand):
             return 'Invalid value.'
         with open(
             os.path.join(
-                settings.STATIC_ROOT, 'backend.data', 'ingredients.csv'
+                settings.STATIC_ROOT, 'backend/data', 'ingredients.csv'
             ), 'r', encoding='utf-8'
         ) as csv_file:
             reader = csv.DictReader(csv_file)
