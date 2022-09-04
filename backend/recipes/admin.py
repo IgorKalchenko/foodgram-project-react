@@ -1,8 +1,8 @@
 from django.contrib import admin
 from django.contrib.auth import get_user_model
 
-from .models import (Favorite, Ingredient, Recipe, RecipeIngredient,
-                     ShoppingCart, Tag, RecipeTag)
+from .models import (Favorite, Ingredient, Recipe, RecipeIngredient, RecipeTag,
+                     ShoppingCart, Tag)
 
 User = get_user_model()
 

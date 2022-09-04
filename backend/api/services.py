@@ -1,8 +1,9 @@
 from django.db.models import Sum
 from django.http import HttpResponse
-from recipes.models import RecipeIngredient
 from rest_framework import status
 from rest_framework.response import Response
+
+from recipes.models import RecipeIngredient
 
 
 def download_cart(user):
