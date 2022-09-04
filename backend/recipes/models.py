@@ -78,7 +78,7 @@ class Recipe(models.Model):
         Tag,
         through='RecipeTag',
         related_name='recipes',
-        verbose_name=_('Ingredients')
+        verbose_name=_('Tags')
     )
     cooking_time = models.PositiveIntegerField(
         verbose_name='Время приготовления',

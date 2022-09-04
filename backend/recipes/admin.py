@@ -2,16 +2,25 @@ from django.contrib import admin
 from django.contrib.auth import get_user_model
 
 from .models import (Favorite, Ingredient, Recipe, RecipeIngredient,
-                     ShoppingCart, Tag)
+                     ShoppingCart, Tag, RecipeTag)
 
 User = get_user_model()
+
+
+class RecipeIngredientInline(admin.TabularInline):
+    model = RecipeIngredient
+
+
+class RecipeTagInline(admin.TabularInline):
+    model = RecipeTag
 
 
 class RecipeAdmin(admin.ModelAdmin):
     list_display = ('name', 'author')
     list_filter = ('author', 'name', 'tags')
     search_fields = ('author', 'name', 'tags')
-    readonly_fields = ('favorite_score',)
+    read_only_fields = ('favorite_score',)
+    inlines = (RecipeIngredientInline, RecipeTagInline)
 
     def favorite_score(self, obj):
         return User.objects.filter(is_favorited=obj).count()
