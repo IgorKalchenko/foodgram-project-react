@@ -1,5 +1,11 @@
 version: '3.8'
 services:
+  frontend:
+    image: igorkalchenko/foodgram_front:latest
+    volumes:
+      - ../frontend/:/app/result_build/
+    depends_on:
+      - web
   db:
     image: postgres:13.0-alpine
     volumes:
@@ -27,12 +33,6 @@ services:
       - ../docs/:/usr/share/nginx/html/api/docs/
       - static_value:/var/html/static/
       - media_value:/var/html/media/
-    depends_on:
-      - web
-  frontend:
-    image: igorkalchenko/foodgram_front:latest
-    volumes:
-      - ../frontend/:/app/result_build/
     depends_on:
       - web
 volumes:
