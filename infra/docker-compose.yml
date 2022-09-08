@@ -6,7 +6,7 @@ services:
       - /var/lib/postgresql/data/
     env_file:
       - ./.env
-  backend:
+  web:
     image: igorkalchenko/foodgram_back:latest
     restart: always
     volumes:
@@ -28,7 +28,7 @@ services:
       - static_value:/var/html/static/
       - media_value:/var/html/media/
     depends_on:
-      - backend
+      - web
   frontend:
     image: igorkalchenko/foodgram_front:latest
     volumes:
