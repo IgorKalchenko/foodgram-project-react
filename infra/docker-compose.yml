@@ -4,8 +4,6 @@ services:
     image: igorkalchenko/foodgram_front:latest
     volumes:
       - ../frontend/:/app/result_build/
-    depends_on:
-      - web
   db:
     image: postgres:13.0-alpine
     volumes:
