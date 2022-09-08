@@ -33,6 +33,8 @@ services:
     image: igorkalchenko/foodgram_front:latest
     volumes:
       - ../frontend/:/app/result_build/
+    depends_on:
+      - web
 volumes:
   static_value:
   media_value:
