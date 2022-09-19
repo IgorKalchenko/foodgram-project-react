@@ -9,7 +9,7 @@ from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
 from users.models import Subscription
 
-from .filters import RecipeFilter, IngredientFilter
+from .filters import IngredientFilter, RecipeFilter
 from .paginators import PageLimitPagination
 from .permissions import AuthorOrReadOnly
 from .serializers import (CustomUserCreateSerializer, CustomUserSerializer,
