@@ -4,13 +4,12 @@ from djoser.views import UserViewSet
 from recipes.models import Favorite, Ingredient, Recipe, ShoppingCart, Tag
 from rest_framework import status
 from rest_framework.decorators import action
-from rest_framework.filters import SearchFilter
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
 from users.models import Subscription
 
-from .filters import RecipeFilter
+from .filters import RecipeFilter, IngredientFilter
 from .paginators import PageLimitPagination
 from .permissions import AuthorOrReadOnly
 from .serializers import (CustomUserCreateSerializer, CustomUserSerializer,
@@ -26,14 +25,16 @@ class TagViewSet(ReadOnlyModelViewSet):
     queryset = Tag.objects.all().order_by('name')
     serializer_class = TagSerializer
     permission_classes = [AllowAny]
+    agination_class = None
 
 
 class IngredientViewSet(ReadOnlyModelViewSet):
     queryset = Ingredient.objects.all().order_by('name')
     serializer_class = IngredientSerializer
     permission_classes = [AllowAny]
-    filter_backends = (SearchFilter,)
+    filter_backends = (IngredientFilter,)
     search_fields = ('^name',)
+    pagination_class = None
 
 
 class CustomUserViewSet(UserViewSet):
