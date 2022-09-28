@@ -96,7 +96,7 @@ class RecipeViewSet(ModelViewSet):
     queryset = Recipe.objects.all().order_by('-pub_date')
     permission_classes = (AuthorOrReadOnly,)
     pagination_class = PageLimitPagination
-    filter_class = RecipeFilter
+    filterset_class = RecipeFilter
 
     def get_serializer_class(self):
         if self.request.method == 'POST':
@@ -119,8 +119,15 @@ class RecipeViewSet(ModelViewSet):
             return Response(
                 serializer.data, status=status.HTTP_201_CREATED
             )
-        current_object.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        elif request.method == 'DELETE':
+            if current_object.exists():
+                current_object.delete()
+                return Response(status=status.HTTP_204_NO_CONTENT)
+            else:
+                return Response(
+                    {'errors': 'It\'s not added to Favorites'},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
 
     @action(
         detail=True,
