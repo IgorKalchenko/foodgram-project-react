@@ -123,11 +123,10 @@ class RecipeViewSet(ModelViewSet):
             if current_object.exists():
                 current_object.delete()
                 return Response(status=status.HTTP_204_NO_CONTENT)
-            else:
-                return Response(
-                    {'errors': 'It\'s not added to Favorites'},
-                    status=status.HTTP_400_BAD_REQUEST
-                )
+        return Response(
+            {'errors': 'It\'s not added to Favorites'},
+            status=status.HTTP_400_BAD_REQUEST
+        )
 
     @action(
         detail=True,
