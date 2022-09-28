@@ -11,15 +11,15 @@ def download_cart(user):
     ingredients = RecipeIngredient.objects.filter(
         recipe__in=(user.is_in_shopping_cart.values('id'))
     ).values(
-        'ingredient__name',
+        'ingredients__name',
         'ingredients__measurement_unit'
     ).annotate(amount=Sum('amount'))
     filename = f'{user.username}_shopping_list.txt'
     shopping_list = 'Shopping List\n\n'
     for ingredient in ingredients:
-        name = ingredient['ingredient__name']
+        name = ingredient['ingredients__name']
         amount = ingredient['amount']
-        measurement_unit = ingredient['ingredient__measurement_unit']
+        measurement_unit = ingredient['ingredients__measurement_unit']
         shopping_list += (
             f'{name}: {amount} {measurement_unit}\n'
         )
