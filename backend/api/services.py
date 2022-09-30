@@ -23,9 +23,6 @@ def download_cart(user):
         shopping_list += (
             f'{name}: {amount} {measurement_unit}\n'
         )
-    return HttpResponse(
-        shopping_list, headers={
-            'Content-Type': 'text.txt; charset=utf-8',
-            'Content-Disposition': f'attachment; filename={filename}'
-        }
-    )
+    response = HttpResponse(content_type='text.txt', charset='utf-8')
+    response['Content-Disposition'] = f'attachment; filename={filename}'
+    return response
