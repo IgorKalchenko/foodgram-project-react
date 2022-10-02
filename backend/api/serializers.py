@@ -72,9 +72,7 @@ class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
         child=serializers.SlugRelatedField(
             slug_field='id',
             queryset=Tag.objects.all(),
-            many=True
-        ),
-        allow_empty=False
+        )
     )
 
     class Meta:
