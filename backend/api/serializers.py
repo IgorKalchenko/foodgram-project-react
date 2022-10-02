@@ -25,14 +25,7 @@ class TagSerializer(serializers.ModelSerializer):
 class RecipeGetSerializer(serializers.ModelSerializer):
     image = Base64ImageField()
     ingredients = IngredientSerializer(many=True)
-    tags = serializers.ListField(
-        child=serializers.SlugRelatedField(
-            slug_field='id',
-            queryset=Tag.objects.all(),
-            many=True
-        ),
-        allow_empty=False
-    )
+    tags = TagSerializer(many=True)
     is_favorited = serializers.SerializerMethodField()
     is_in_shopping_cart = serializers.SerializerMethodField()
 
@@ -69,7 +62,14 @@ class RecipeShortSerializer(serializers.ModelSerializer):
 class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
     image = Base64ImageField()
     ingredients = IngredientSerializer(many=True)
-    tags = TagSerializer(many=True)
+    tags = serializers.ListField(
+        child=serializers.SlugRelatedField(
+            slug_field='id',
+            queryset=Tag.objects.all(),
+            many=True
+        ),
+        allow_empty=False
+    )
 
     class Meta:
         model = Recipe
