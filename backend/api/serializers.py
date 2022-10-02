@@ -15,6 +15,12 @@ class IngredientSerializer(serializers.ModelSerializer):
         read_only_fields = ('id', 'name', 'measurement_unit')
 
 
+class IngredientToRecipeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = RecipeIngredient
+        fields = ('id', 'amount')
+
+
 class TagSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tag
@@ -61,7 +67,7 @@ class RecipeShortSerializer(serializers.ModelSerializer):
 
 class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
     image = Base64ImageField()
-    ingredients = IngredientSerializer(many=True)
+    ingredients = IngredientToRecipeSerializer(many=True)
     tags = serializers.ListField(
         child=serializers.SlugRelatedField(
             slug_field='id',
