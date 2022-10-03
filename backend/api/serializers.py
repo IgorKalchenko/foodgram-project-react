@@ -71,10 +71,8 @@ class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
     tags = serializers.ListField(
         child=serializers.SlugRelatedField(
             slug_field='id',
-            queryset=Tag.objects.all(),
-            many=True
-        ),
-        allow_empty=False
+            queryset=Tag.objects.all()
+        )
     )
 
     class Meta:
