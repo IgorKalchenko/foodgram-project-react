@@ -71,7 +71,8 @@ class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
     tags = serializers.ListField(
         child=serializers.SlugRelatedField(
             slug_field='id',
-            queryset=Tag.objects.all()
+            queryset=Tag.objects.all(),
+            many=True
         )
     )
 
@@ -88,14 +89,6 @@ class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
                 'The value of "name" field could '
                 'not be the same as the value of "text" field.'
             )
-        if self.context.get('request').method == 'POST':
-            if Recipe.objects.filter(
-                author=data['author'],
-                name=data['name']
-            ).exists():
-                return serializers.ValidationError(
-                    'You\'ve already created the recipe with this name.'
-                )
         if not data['tags']:
             raise serializers.ValidationError(
                 '"Tag" field must be filled out.'
