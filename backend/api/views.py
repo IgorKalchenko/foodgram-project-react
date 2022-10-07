@@ -1,4 +1,5 @@
 from django.contrib.auth import get_user_model
+from django_filters.rest_framework import DjangoFilterBackend
 from django.shortcuts import get_object_or_404
 from djoser.views import UserViewSet
 from recipes.models import Favorite, Ingredient, Recipe, ShoppingCart, Tag
@@ -96,6 +97,7 @@ class RecipeViewSet(ModelViewSet):
     queryset = Recipe.objects.all().order_by('-pub_date')
     permission_classes = (AuthorOrReadOnly,)
     pagination_class = PageLimitPagination
+    filter_backends = (DjangoFilterBackend,)
     filterset_class = RecipeFilter
 
     def get_serializer_class(self):
@@ -124,7 +126,7 @@ class RecipeViewSet(ModelViewSet):
                 current_object.delete()
                 return Response(status=status.HTTP_204_NO_CONTENT)
         return Response(
-            {'errors': 'It\'s not added to Favorites'},
+            {'errors': 'It\'s not added'},
             status=status.HTTP_400_BAD_REQUEST
         )
 
