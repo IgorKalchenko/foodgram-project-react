@@ -113,7 +113,7 @@ class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
     def recipe_ingredient_tag_create(cls, recipe, tags, ingredients):
         recipe_list = [RecipeIngredient(
             recipe=recipe,
-            ingredients=get_object_or_404(Ingredient, id=ingredient['id']),
+            ingredients=get_object_or_404(Ingredient, pk=ingredient['id']),
             amount=ingredient['amount']
         ) for ingredient in ingredients]
         RecipeIngredient.objects.bulk_create(recipe_list)
