@@ -18,6 +18,8 @@ class IngredientSerializer(serializers.ModelSerializer):
 
 
 class IngredientToRecipeSerializer(serializers.ModelSerializer):
+    id = serializers.IntegerField(source='ingredient.id')
+
     class Meta:
         model = RecipeIngredient
         fields = ('id', 'amount')
