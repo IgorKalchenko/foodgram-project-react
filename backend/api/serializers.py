@@ -122,6 +122,7 @@ class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
         recipe.tags.set(tags)
 
     def create(self, validated_data):
+        logging.error(validated_data)
         ingredients = validated_data.pop('ingredients')
         logging.error(ingredients)
         tags = validated_data.pop('tags')
