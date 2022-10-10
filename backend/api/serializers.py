@@ -122,7 +122,7 @@ class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
         ) for ingredient in ingredients]
         RecipeIngredient.objects.bulk_create(recipe_list)
         recipe.tags.set(tags)
-    
+
     def to_representation(self, value):
         return RecipeGetSerializer(value, context=self.context).data
 
