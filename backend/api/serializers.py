@@ -197,12 +197,15 @@ class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
             'cooking_time', instance.cooking_time
         )
         RecipeIngredient.objects.filter(recipe=instance).delete()
-        RecipeTag.objects.filter(recipe=instance).delete()
-        self.recipe_ingredient_tag_create(
-            recipe=instance,
-            tags=tags,
-            ingredients=ingredients
-        )
+        for ingredient in ingredients:
+            RecipeIngredient.objects.create(
+                recipe=instance, ingredient=ingredient['id'],
+                amount=ingredient['amount']
+            )
+        tags_recipe = RecipeTag.objects.filter(recipe=instance)
+        tags_recipe.delete()
+        for tag in tags:
+            RecipeTag.objects.create(recipe=instance, tag=tag)
         instance.save()
         return instance
 
