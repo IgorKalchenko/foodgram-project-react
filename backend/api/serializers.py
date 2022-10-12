@@ -198,8 +198,6 @@ class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
             'cooking_time', instance.cooking_time
         )
         RecipeIngredient.objects.filter(recipe=instance).delete()
-        instance.ingredients.clear()
-        instance.tags.clear()
         self.recipe_ingredient_tag_create(
             recipe=instance,
             tags=tags,
