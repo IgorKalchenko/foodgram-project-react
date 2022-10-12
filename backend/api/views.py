@@ -144,7 +144,8 @@ class RecipeViewSet(ModelViewSet):
     @action(
         detail=True,
         permission_classes=(IsAuthenticated,),
-        methods=['post', 'delete']
+        methods=['post', 'get', 'delete'],
+        pagination_class=None
     )
     def shopping_cart(self, request, pk):
         recipe = get_object_or_404(Recipe, id=pk)
