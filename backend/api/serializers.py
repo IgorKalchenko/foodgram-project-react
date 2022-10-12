@@ -196,6 +196,7 @@ class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
         instance.cooking_time = validated_data.get(
             'cooking_time', instance.cooking_time
         )
+        RecipeIngredient.objects.filter(recipe=instance).delete()
         instance.ingredients.clear()
         instance.tags.clear()
         self.recipe_ingredient_tag_create(
