@@ -1,9 +1,8 @@
-from backend.recipes.models import RecipeTag
 from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
 from djoser.serializers import UserCreateSerializer, UserSerializer
 from drf_extra_fields.fields import Base64ImageField
-from recipes.models import Ingredient, Recipe, RecipeIngredient, Tag
+from recipes.models import Ingredient, Recipe, RecipeIngredient, RecipeTag, Tag
 from rest_framework import serializers
 
 User = get_user_model()
