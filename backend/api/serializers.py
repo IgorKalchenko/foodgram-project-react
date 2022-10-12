@@ -188,9 +188,8 @@ class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
         return recipe
 
     def update(self, instance, validated_data):
-        update_context = self.context['request']
-        ingredients = update_context.data['ingredients']
-        tags = update_context.data['tags']
+        ingredients = validated_data.pop('ingredients')
+        tags = validated_data.pop('tags')
         instance.name = validated_data.get('name', instance.name)
         instance.image = validated_data.get('image', instance.image)
         instance.text = validated_data.get('text', instance.text)
