@@ -1,5 +1,3 @@
-import logging
-
 from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
 from djoser.serializers import UserCreateSerializer, UserSerializer
@@ -176,9 +174,7 @@ class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
         return RecipeGetSerializer(value, context=self.context).data
 
     def create(self, validated_data):
-        logging.error(validated_data)
         ingredients = validated_data.pop('ingredients')
-        logging.error(ingredients)
         tags = validated_data.pop('tags')
         recipe = Recipe.objects.create(
             author=self.context.get('request').user,
@@ -192,16 +188,16 @@ class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
         return recipe
 
     def update(self, instance, validated_data):
-        ingredients = validated_data.get('ingredients')
-        tags = validated_data.get('tags')
+        ingredients = validated_data.pop('ingredients')
+        tags = validated_data.pop('tags')
         instance.name = validated_data.get('name', instance.name)
         instance.image = validated_data.get('image', instance.image)
         instance.text = validated_data.get('text', instance.text)
-        instance.tags = validated_data.get('tags', instance.tags)
         instance.cooking_time = validated_data.get(
             'cooking_time', instance.cooking_time
         )
         instance.ingredients.clear()
+        instance.tags.clear()
         self.recipe_ingredient_tag_create(
             recipe=instance,
             tags=tags,
