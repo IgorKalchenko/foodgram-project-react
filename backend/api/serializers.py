@@ -1,5 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
+from backend.recipes.models import RecipeTag
 from djoser.serializers import UserCreateSerializer, UserSerializer
 from drf_extra_fields.fields import Base64ImageField
 from recipes.models import Ingredient, Recipe, RecipeIngredient, Tag
@@ -188,25 +189,23 @@ class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
         return recipe
 
     def update(self, instance, validated_data):
-        context = self.context['request']
-        tags_set = context.data['tags']
-        recipe = instance
+        update_context = self.context['request']
+        ingredients = update_context.data['ingredients']
+        tags = update_context.data['tags']
         instance.name = validated_data.get('name', instance.name)
+        instance.image = validated_data.get('image', instance.image)
         instance.text = validated_data.get('text', instance.text)
         instance.cooking_time = validated_data.get(
-            'cooking_time', instance.cooking_time)
-        instance.image = validated_data.get('image', instance.image)
-        instance.save()
-        instance.tags.set(tags_set)
+            'cooking_time', instance.cooking_time
+        )
         RecipeIngredient.objects.filter(recipe=instance).delete()
-        ingredients = context.data['ingredients']
-        for ingredient in ingredients:
-            ingredient_model = Ingredient.objects.get(id=ingredient['id'])
-            RecipeIngredient.objects.create(
-                recipe=recipe,
-                ingredient=ingredient_model,
-                amount=ingredient['amount'],
-            )
+        RecipeTag.objects.filter(recipe=instance).delete()
+        self.recipe_ingredient_tag_create(
+            recipe=instance,
+            tags=tags,
+            ingredients=ingredients
+        )
+        instance.save()
         return instance
 
 
