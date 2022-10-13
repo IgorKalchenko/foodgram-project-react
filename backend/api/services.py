@@ -11,7 +11,7 @@ def download_cart(user):
     if not user.is_in_shopping_cart.exists():
         return Response(status=status.HTTP_400_BAD_REQUEST)
     ingredients = RecipeIngredient.objects.filter(
-        recipe__is_in_shopping_cart_user=user
+        recipe__is_in_shopping_cart__user=user
     ).values(
         'ingredients__name',
         'ingredients__measurement_unit'
