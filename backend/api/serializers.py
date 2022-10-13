@@ -2,7 +2,10 @@ from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
 from djoser.serializers import UserCreateSerializer, UserSerializer
 from drf_extra_fields.fields import Base64ImageField
-from recipes.models import Ingredient, Recipe, RecipeIngredient, RecipeTag, Tag
+from recipes.models import (
+    Ingredient, Recipe, RecipeIngredient, Tag, Favorite,
+    ShoppingCart
+)
 from rest_framework import serializers
 
 User = get_user_model()
@@ -96,15 +99,19 @@ class RecipeGetSerializer(serializers.ModelSerializer):
 
     def get_is_favorited(self, obj):
         user = self.context.get('request').user
-        if user.is_anonymous or user == obj:
+        if user.is_anonymous:
             return False
-        return user.is_favorited.filter(id=obj.id).exists()
+        return Favorite.objects.filter(
+            user=user, recipe__id=obj.id
+        ).exists()
 
     def get_is_in_shopping_cart(self, obj):
         user = self.context.get('request').user
-        if user.is_anonymous or user == obj:
+        if user.is_anonymous:
             return False
-        return user.is_in_shopping_cart.filter(id=obj.id).exists()
+        return ShoppingCart.objects.filter(
+            user=user, recipe__id=obj.id
+        ).exists()
 
 
 class RecipeShortSerializer(serializers.ModelSerializer):
@@ -197,15 +204,11 @@ class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
             'cooking_time', instance.cooking_time
         )
         RecipeIngredient.objects.filter(recipe=instance).delete()
-        for ingredient in ingredients:
-            RecipeIngredient.objects.create(
-                recipe=instance, ingredient=ingredient['id'],
-                amount=ingredient['amount']
-            )
-        tags_recipe = RecipeTag.objects.filter(recipe=instance)
-        tags_recipe.delete()
-        for tag in tags:
-            RecipeTag.objects.create(recipe=instance, tag=tag)
+        self.recipe_ingredient_tag_create(
+            recipe=instance,
+            tags=tags,
+            ingredients=ingredients
+        )
         instance.save()
         return instance
 
@@ -215,7 +218,6 @@ class SubscriptionSerializer(CustomUserSerializer):
     Сериализатор для вывода авторов, на которых подписан текущий пользователь.
     """
     recipes = RecipeShortSerializer(many=True, source='recipes')
-    is_subscribed = serializers.SerializerMethodField()
     recipes_count = serializers.IntegerField(
         source='recipes.count'
     )
@@ -232,10 +234,4 @@ class SubscriptionSerializer(CustomUserSerializer):
             'recipes',
             'recipes_count',
         )
-        read_only_fields = '__all__'
-
-    def get_is_subscribed(self, obj):
-        user = self.context.get('request').user
-        if user.is_anonymous or user == obj:
-            return False
-        return user.is_subscribed.filter(id=obj.id).exists()
+        read_only_fields = fields
