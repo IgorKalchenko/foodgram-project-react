@@ -123,7 +123,13 @@ class RecipeShortSerializer(serializers.ModelSerializer):
 
 class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
     image = Base64ImageField()
-    ingredients = IngredientToRecipeSerializer(many=True)
+    ingredients = serializers.ListField(
+        child=serializers.SlugRelatedField(
+            slug_field='id',
+            queryset=RecipeIngredient.objects.all()
+        ),
+        allow_empty=False
+    )
     tags = serializers.ListField(
         child=serializers.SlugRelatedField(
             slug_field='id',
@@ -213,9 +219,7 @@ class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
 
 class SubscriptionSerializer(CustomUserSerializer):
     recipes = RecipeShortSerializer(many=True, source='recipes')
-    recipes_count = serializers.IntegerField(
-        source='recipes.count'
-    )
+    recipes_count = serializers.SerializerMethodField()
 
     class Meta:
         model = User
@@ -230,3 +234,6 @@ class SubscriptionSerializer(CustomUserSerializer):
             'recipes_count',
         )
         read_only_fields = fields
+    
+    def get_recipes_count(self, obj):
+        return Recipe.objects.filter()
