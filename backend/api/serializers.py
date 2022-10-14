@@ -234,6 +234,6 @@ class SubscriptionSerializer(CustomUserSerializer):
             'recipes_count',
         )
         read_only_fields = fields
-    
+
     def get_recipes_count(self, obj):
-        return Recipe.objects.filter()
+        return Recipe.objects.filter(author__id=obj.id).count()
