@@ -65,11 +65,12 @@ class IngredientSerializer(serializers.ModelSerializer):
 
 
 class RecipeIngredientGetSerializer(serializers.ModelSerializer):
-    id = serializers.IntegerField(source='ingredients.id')
-    name = serializers.ReadOnlyField(source='ingredients.name')
+    id = serializers.IntegerField(source='ingredients__id')
+    name = serializers.ReadOnlyField(source='ingredients__name')
     measurement_unit = serializers.ReadOnlyField(
-        source='ingredients.measurement_unit'
+        source='ingredients__measurement_unit'
     )
+    amount = serializers.IntegerField()
 
     class Meta:
         model = RecipeIngredient
