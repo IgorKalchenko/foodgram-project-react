@@ -60,8 +60,8 @@ class CustomUserCreateSerializer(UserCreateSerializer):
 class IngredientSerializer(serializers.ModelSerializer):
     class Meta:
         model = Ingredient
-        fields = ('id', 'name', 'measurement_unit')
-        read_only_fields = ('id', 'name', 'measurement_unit')
+        fields = ('id', 'name', 'amount', 'measurement_unit')
+        read_only_fields = ('id', 'name', 'amount', 'measurement_unit')
 
 
 class IngredientToRecipeSerializer(serializers.ModelSerializer):
@@ -123,13 +123,7 @@ class RecipeShortSerializer(serializers.ModelSerializer):
 
 class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
     image = Base64ImageField()
-    ingredients = serializers.ListField(
-        child=serializers.SlugRelatedField(
-            slug_field='id',
-            queryset=RecipeIngredient.objects.all()
-        ),
-        allow_empty=False
-    )
+    ingredients = IngredientToRecipeSerializer(many=True)
     tags = serializers.ListField(
         child=serializers.SlugRelatedField(
             slug_field='id',
