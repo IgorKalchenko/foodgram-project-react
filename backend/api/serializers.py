@@ -180,14 +180,13 @@ class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
         return data
 
     @classmethod
-    def recipe_ingredient_tag_create(cls, recipe, tags, ingredients):
+    def recipe_ingredient_tag_create(cls, recipe, ingredients):
         recipe_list = [RecipeIngredient(
             recipe=recipe,
             ingredients=get_object_or_404(Ingredient, id=ingredient['id']),
             amount=ingredient['amount']
         ) for ingredient in ingredients]
         RecipeIngredient.objects.bulk_create(recipe_list)
-        recipe.tags.set(tags)
 
     def to_representation(self, value):
         return RecipeGetSerializer(value, context=self.context).data
@@ -201,26 +200,29 @@ class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
         )
         self.recipe_ingredient_tag_create(
             recipe=recipe,
-            tags=tags,
             ingredients=ingredients
         )
+        recipe.tags.set(tags)
         return recipe
 
     def update(self, instance, validated_data):
-        ingredients = validated_data.pop('ingredients')
-        tags = validated_data.pop('tags')
+        ingredients = validated_data.get('ingredients')
+        tags = validated_data.get('tags')
         instance.name = validated_data.get('name', instance.name)
         instance.image = validated_data.get('image', instance.image)
         instance.text = validated_data.get('text', instance.text)
         instance.cooking_time = validated_data.get(
             'cooking_time', instance.cooking_time
         )
-        RecipeIngredient.objects.filter(recipe=instance).delete()
-        self.recipe_ingredient_tag_create(
-            recipe=instance,
-            tags=tags,
-            ingredients=ingredients
-        )
+        if tags:
+            instance.tags.clear()
+            instance.tags.set()
+        if ingredients:
+            instance.ingredients.clear()
+            self.recipe_ingredient_tag_create(
+                recipe=instance,
+                ingredients=ingredients
+            )
         instance.save()
         return instance
 
