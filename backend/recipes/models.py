@@ -97,9 +97,11 @@ class Recipe(models.Model):
 class RecipeIngredient(models.Model):
     recipe = models.ForeignKey(
         Recipe,
+        related_name='recipe_amount',
         on_delete=models.CASCADE)
     ingredients = models.ForeignKey(
         Ingredient,
+        related_name='ingredients_amount',
         on_delete=models.CASCADE)
     amount = models.PositiveIntegerField(
         verbose_name=_('amount'),

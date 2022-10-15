@@ -97,7 +97,7 @@ class TagSerializer(serializers.ModelSerializer):
 class RecipeGetSerializer(serializers.ModelSerializer):
     image = Base64ImageField()
     ingredients = RecipeIngredientGetSerializer(
-        source='recipe', many=True
+        source='recipe_amount', many=True
     )
     tags = TagSerializer(many=True)
     is_favorited = serializers.SerializerMethodField()
