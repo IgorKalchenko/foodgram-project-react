@@ -209,7 +209,7 @@ class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
 
     def update(self, instance, validated_data):
         ingredients = validated_data.get('ingredients', instance.ingredients)
-        tags = validated_data.get('tags', instance.tags)
+        tags = self.context['request'].data['tags']
         logging.error(tags)
         instance.name = validated_data.get('name', instance.name)
         instance.image = validated_data.get('image', instance.image)
