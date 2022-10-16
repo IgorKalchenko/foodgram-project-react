@@ -1,3 +1,5 @@
+import logging
+
 from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
 from djoser.serializers import UserCreateSerializer, UserSerializer
@@ -208,6 +210,7 @@ class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
         ingredients = validated_data.get('ingredients', instance.ingredients)
         tags = validated_data.get('tags', instance.tags)
+        logging.error(tags)
         instance.name = validated_data.get('name', instance.name)
         instance.image = validated_data.get('image', instance.image)
         instance.text = validated_data.get('text', instance.text)
@@ -218,6 +221,7 @@ class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
             RecipeTag.objects.filter(recipe=instance).delete()
             instance.tags.clear()
             instance.tags.set(tags)
+            logging.error(instance.tags)
         if ingredients:
             RecipeIngredient.objects.filter(recipe=instance).delete()
             instance.ingredients.clear()
