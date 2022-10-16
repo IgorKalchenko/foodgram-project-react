@@ -3,7 +3,7 @@ from django.shortcuts import get_object_or_404
 from djoser.serializers import UserCreateSerializer, UserSerializer
 from drf_extra_fields.fields import Base64ImageField
 from recipes.models import (Favorite, Ingredient, Recipe, RecipeIngredient,
-                            ShoppingCart, Tag)
+                            RecipeTag, ShoppingCart, Tag)
 from rest_framework import serializers
 
 User = get_user_model()
@@ -215,9 +215,11 @@ class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
             'cooking_time', instance.cooking_time
         )
         if tags:
+            RecipeTag.objects.filter(recipe=instance).delete()
             instance.tags.clear()
             instance.tags.set()
         if ingredients:
+            RecipeIngredient.objects.filter(recipe=instance).delete()
             instance.ingredients.clear()
             self.recipe_ingredient_tag_create(
                 recipe=instance,
