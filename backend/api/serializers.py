@@ -141,7 +141,7 @@ class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
     tags = serializers.ListField(
         child=serializers.SlugRelatedField(
             slug_field='id',
-            queryset=RecipeTag.objects.all()
+            queryset=Tag.objects.all()
         ),
         allow_empty=False
     )
@@ -206,8 +206,8 @@ class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
         return recipe
 
     def update(self, instance, validated_data):
-        ingredients = validated_data.pop('ingredients')
-        tags = validated_data.pop('tags')
+        ingredients = validated_data.get('ingredients', instance.ingredients)
+        tags = validated_data.get('tags', instance.tags)
         instance.name = validated_data.get('name', instance.name)
         instance.image = validated_data.get('image', instance.image)
         instance.text = validated_data.get('text', instance.text)
@@ -217,7 +217,7 @@ class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
         if tags:
             RecipeTag.objects.filter(recipe=instance).delete()
             instance.tags.clear()
-            instance.tags.set()
+            instance.tags.set(tags)
         if ingredients:
             RecipeIngredient.objects.filter(recipe=instance).delete()
             instance.ingredients.clear()
