@@ -183,7 +183,7 @@ class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
         return data
 
     @classmethod
-    def recipe_ingredient_tag_create(cls, recipe, ingredients):
+    def recipe_ingredient_create(cls, recipe, ingredients):
         recipe_list = [RecipeIngredient(
             recipe=recipe,
             ingredients=get_object_or_404(Ingredient, id=ingredient['id']),
@@ -201,7 +201,7 @@ class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
             author=self.context.get('request').user,
             **validated_data
         )
-        self.recipe_ingredient_tag_create(
+        self.recipe_ingredient_create(
             recipe=recipe,
             ingredients=ingredients
         )
@@ -209,7 +209,7 @@ class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
         return recipe
 
     def update(self, instance, validated_data):
-        ingredients = validated_data.get('ingredients', instance.ingredients)
+        ingredients = self.context['request'].data['ingredients']
         tags = self.context['request'].data['tags']
         logging.error(tags)
         instance.name = validated_data.get('name', instance.name)
@@ -218,6 +218,7 @@ class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
         instance.cooking_time = validated_data.get(
             'cooking_time', instance.cooking_time
         )
+        instance.save()
         if tags:
             RecipeTag.objects.filter(recipe=instance).delete()
             instance.tags.clear()
@@ -226,11 +227,10 @@ class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
         if ingredients:
             RecipeIngredient.objects.filter(recipe=instance).delete()
             instance.ingredients.clear()
-            self.recipe_ingredient_tag_create(
+            self.recipe_ingredient_create(
                 recipe=instance,
                 ingredients=ingredients
             )
-        instance.save()
         return instance
 
 
