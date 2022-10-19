@@ -156,31 +156,31 @@ class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
             'tags', 'ingredients', 'cooking_time'
         )
 
-    # def validate(self, data):
-    #     if data['name'] == data['text']:
-    #         raise serializers.ValidationError(
-    #             'The value of "name" field could '
-    #             'not be the same as the value of "text" field.'
-    #         )
-    #     if not data['tags']:
-    #         raise serializers.ValidationError(
-    #             '"Tag" field must be filled out.'
-    #         )
-    #     for tag in data['tags']:
-    #         if data['tags'].count(tag) > 1:
-    #             raise serializers.ValidationError(
-    #                 f'You have repeated tags: {tag}'
-    #             )
-    #     if not data['ingredients']:
-    #         raise serializers.ValidationError(
-    #             '"Ingredients" field must be filled out.'
-    #         )
-    #     for ingredient in data['ingredients']:
-    #         if data['ingredients'].count(ingredient) > 1:
-    #             raise serializers.ValidationError(
-    #                 f'You have repeated ingredients: {ingredient}'
-    #             )
-    #     return data
+    def validate(self, data):
+        if data['name'] == data['text']:
+            raise serializers.ValidationError(
+                'The value of "name" field could '
+                'not be the same as the value of "text" field.'
+            )
+        if not data['tags']:
+            raise serializers.ValidationError(
+                '"Tag" field must be filled out.'
+            )
+        for tag in data['tags']:
+            if data['tags'].count(tag) > 1:
+                raise serializers.ValidationError(
+                    f'You have repeated tags: {tag}'
+                )
+        if not data['ingredients']:
+            raise serializers.ValidationError(
+                '"Ingredients" field must be filled out.'
+            )
+        for ingredient in data['ingredients']:
+            if data['ingredients'].count(ingredient) > 1:
+                raise serializers.ValidationError(
+                    f'You have repeated ingredients: {ingredient}'
+                )
+        return data
 
     @classmethod
     def recipe_ingredient_create(cls, recipe, ingredients):
