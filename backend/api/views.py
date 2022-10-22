@@ -81,16 +81,26 @@ class CustomUserViewSet(UserViewSet):
         subscription.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-    @action(detail=False, permission_classes=[IsAuthenticated])
+    @action(
+        detail=False,
+        permission_classes=[IsAuthenticated],
+        url_path='subscriptions',
+        methods=['get']
+    )
     def subscriptions(self, request):
         queryset = User.objects.filter(
-            user=request.user
-        ).order_by('user')
-        page = self.paginate_queryset(queryset)
-        serializer = SubscriptionSerializer(
-            page, many=True, context={'request': request}
+            subscriber__user=request.user
         )
-        return self.get_paginated_response(serializer.data)
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = SubscriptionSerializer(
+                page, many=True, context={'request': request}
+            )
+            return self.get_paginated_response(serializer.data)
+        serializer = SubscriptionSerializer(
+            queryset, many=True
+        )
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 class RecipeViewSet(ModelViewSet):
