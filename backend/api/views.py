@@ -47,13 +47,15 @@ class CustomUserViewSet(UserViewSet):
         permission_classes=[IsAuthenticated],
         methods=['post', 'delete']
     )
-    def subscribe(self, request, id=None):
+    def subscribe(self, request):
         user = request.user
-        author = get_object_or_404(User, id=id)
-        subscription = Subscription.objects.filter(
-            user=user, is_subscribed=author
+        author = get_object_or_404(User, id=request.user.id)
+        subscription = get_object_or_404(
+            Subscription,
+            user=user,
+            is_subscribed=author
         )
-        if request.method == 'POST':
+        if request.method == 'post':
             if user == author:
                 return Response(
                     {'errors': 'It\'s not allowed to subscribe to yourself.'},
@@ -89,7 +91,7 @@ class CustomUserViewSet(UserViewSet):
     )
     def subscriptions(self, request):
         queryset = User.objects.filter(
-            subscriber__user=request.user
+            subscriber__user__id=request.user.id
         )
         page = self.paginate_queryset(queryset)
         if page is not None:
