@@ -50,8 +50,7 @@ class CustomUserViewSet(UserViewSet):
     def subscribe(self, request, id):
         user = request.user
         author = get_object_or_404(User, id=id)
-        subscription = get_object_or_404(
-            Subscription,
+        subscription = Subscription.objects.filter(
             user=user,
             is_subscribed=author
         )
@@ -86,7 +85,6 @@ class CustomUserViewSet(UserViewSet):
     @action(
         detail=False,
         permission_classes=[IsAuthenticated],
-        url_path='subscriptions',
         methods=['get']
     )
     def subscriptions(self, request):
