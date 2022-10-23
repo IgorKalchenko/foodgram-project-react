@@ -51,8 +51,8 @@ class CustomUserViewSet(UserViewSet):
     )
     def subscribe(self, request, kwargs):
         user = request.user
-        logging.error(f'{kwargs}')
-        author = get_object_or_404(User, id=self.kwargs.get('id'))
+        logging.exception(f'{kwargs}')
+        author = get_object_or_404(User, id=kwargs.get('id'))
         subscription = Subscription.objects.filter(
             user=user,
             is_subscribed__id=author
