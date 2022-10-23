@@ -47,12 +47,12 @@ class CustomUserViewSet(UserViewSet):
         permission_classes=[IsAuthenticated],
         methods=['post', 'delete']
     )
-    def subscribe(self, request, id):
+    def subscribe(self, request):
         user = request.user
-        author = get_object_or_404(User, id=id)
+        author = get_object_or_404(User, id=self.kwargs.get('id'))
         subscription = Subscription.objects.filter(
             user=user,
-            is_subscribed=author
+            is_subscribed__id=author
         )
         if request.method == 'post':
             if user == author:
