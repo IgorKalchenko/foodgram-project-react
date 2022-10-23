@@ -49,9 +49,9 @@ class CustomUserViewSet(UserViewSet):
         permission_classes=[IsAuthenticated],
         methods=['post', 'delete']
     )
-    def subscribe(self, request):
+    def subscribe(self, request, kwargs):
         user = request.user
-        logging.error(self.kwargs)
+        logging.error(f'{kwargs}')
         author = get_object_or_404(User, id=self.kwargs.get('id'))
         subscription = Subscription.objects.filter(
             user=user,
