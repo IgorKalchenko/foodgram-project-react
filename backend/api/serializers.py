@@ -29,7 +29,7 @@ class CustomUserSerializer(UserSerializer):
         if user.is_anonymous or user == obj:
             return False
         return Subscription.objects.filter(
-            user=user, is_subscribed=obj
+            user=user, is_subscribed=obj.id
         ).exists()
 
 
