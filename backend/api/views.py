@@ -1,3 +1,5 @@
+import logging
+
 from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
@@ -49,6 +51,7 @@ class CustomUserViewSet(UserViewSet):
     )
     def subscribe(self, request):
         user = request.user
+        logging.error(self.kwargs)
         author = get_object_or_404(User, id=self.kwargs.get('id'))
         subscription = Subscription.objects.filter(
             user=user,
