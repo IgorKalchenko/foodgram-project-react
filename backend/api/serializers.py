@@ -103,7 +103,7 @@ class RecipeGetSerializer(serializers.ModelSerializer):
     tags = TagSerializer(many=True)
     is_favorited = serializers.SerializerMethodField()
     is_in_shopping_cart = serializers.SerializerMethodField()
-    author = CustomUserSerializer()
+    author = CustomUserSerializer(read_only=True)
 
     class Meta:
         model = Recipe
@@ -136,7 +136,7 @@ class RecipeShortSerializer(serializers.ModelSerializer):
     class Meta:
         model = Recipe
         fields = ('id', 'name', 'image', 'cooking_time')
-        read_only_fields = ('id', 'name', 'image', 'cooking_time')
+        read_only_fields = '__all__',
 
 
 class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
@@ -234,7 +234,7 @@ class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
 
 
 class SubscriptionSerializer(CustomUserSerializer):
-    recipes = RecipeShortSerializer(many=True)
+    recipes = RecipeShortSerializer(many=True, read_only=True)
     recipes_count = serializers.SerializerMethodField()
 
     class Meta:
