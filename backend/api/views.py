@@ -40,7 +40,6 @@ class IngredientViewSet(ReadOnlyModelViewSet):
 
 class CustomUserViewSet(UserViewSet):
     pagination_class = PageLimitPagination
-    queryset = User.objects.all()
 
     def get_serializer_class(self):
         if self.action in ('create', 'update', 'partial_update'):
@@ -109,7 +108,7 @@ class CustomUserViewSet(UserViewSet):
 
 
 class RecipeViewSet(ModelViewSet):
-    queryset = Recipe.objects.select_related('author')
+    queryset = Recipe.objects.all().order_by('-pub_date')
     permission_classes = (AuthorOrReadOnly,)
     pagination_class = PageLimitPagination
     filter_backends = (DjangoFilterBackend,)
