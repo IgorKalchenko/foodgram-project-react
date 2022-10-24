@@ -94,7 +94,7 @@ class CustomUserViewSet(UserViewSet):
     )
     def subscriptions(self, request):
         user = self.request.user
-        queryset = user.is_subscribed.all()
+        queryset = user.is_subscribed
         page = self.paginate_queryset(queryset)
         if page is not None:
             serializer = SubscriptionSerializer(
