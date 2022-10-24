@@ -40,6 +40,7 @@ class IngredientViewSet(ReadOnlyModelViewSet):
 
 class CustomUserViewSet(UserViewSet):
     pagination_class = PageLimitPagination
+    lookup_url_kwarg = 'id'
 
     def get_serializer_class(self):
         if self.action in ('create', 'update', 'partial_update'):

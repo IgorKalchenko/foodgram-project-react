@@ -26,7 +26,7 @@ class CustomUserSerializer(UserSerializer):
 
     def get_is_subscribed(self, obj):
         user = self.context.get('request').user
-        if user.is_anonymous or user == obj:
+        if user.is_anonymous or (user == obj):
             return False
         return Subscription.objects.filter(
             user=user, is_subscribed=obj
@@ -64,7 +64,7 @@ class IngredientSerializer(serializers.ModelSerializer):
     class Meta:
         model = Ingredient
         fields = ('id', 'name', 'measurement_unit')
-        read_only_fields = ('id', 'name', 'measurement_unit')
+        read_only_fields = '__all__',
 
 
 class RecipeIngredientGetSerializer(serializers.ModelSerializer):
@@ -92,7 +92,7 @@ class TagSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tag
         fields = ('id', 'name', 'color', 'slug')
-        read_only_fields = ('id', 'name', 'color', 'slug')
+        read_only_fields = '__all__',
 
 
 class RecipeGetSerializer(serializers.ModelSerializer):
@@ -249,6 +249,7 @@ class SubscriptionSerializer(CustomUserSerializer):
             'recipes',
             'recipes_count',
         )
+        read_only_fields = '__all__',
 
     def get_recipes_count(self, obj):
         return obj.recipes.count()
