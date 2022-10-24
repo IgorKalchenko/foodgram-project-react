@@ -40,7 +40,11 @@ class IngredientViewSet(ReadOnlyModelViewSet):
 
 class CustomUserViewSet(UserViewSet):
     pagination_class = PageLimitPagination
-    serializer_class = CustomUserCreateSerializer
+
+    def get_serializer_class(self):
+        if self.method in ('create', 'update', 'partial_update'):
+            return CustomUserCreateSerializer
+        return CustomUserSerializer
 
     @action(
         detail=True,
