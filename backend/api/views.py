@@ -78,11 +78,12 @@ class CustomUserViewSet(UserViewSet):
             return Response(
                 serializer.data, status=status.HTTP_201_CREATED
             )
-        if subscription.exists():
+        if not subscription.exists():
             return Response(
                 {
                     'errors':
-                    f'You are not subscribed to the user {author.id}, {user.id}'
+                    'You are not subscribed to the '
+                    f'user {author.id}, {user.id}'
                 },
                 status=status.HTTP_400_BAD_REQUEST
             )
