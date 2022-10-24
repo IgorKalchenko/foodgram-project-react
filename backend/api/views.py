@@ -49,15 +49,14 @@ class CustomUserViewSet(UserViewSet):
 
     @action(
         detail=True,
-        permission_classes=[IsAuthenticated],
         methods=['post', 'delete']
     )
     def subscribe(self, request, id):
-        user = request.user
+        user = self.request.user
         author = get_object_or_404(User, id=id)
         subscription = Subscription.objects.filter(
-            user=user,
-            is_subscribed=author
+            user=user.id,
+            is_subscribed=author.id
         )
         if request.method == 'post':
             if user == author:
@@ -71,7 +70,7 @@ class CustomUserViewSet(UserViewSet):
                     status=status.HTTP_400_BAD_REQUEST
                 )
             Subscription.objects.create(
-                user=user, is_subscribed=author
+                user=user.id, is_subscribed=author.id
             )
             serializer = CustomUserSerializer(
                 author, context={'request': request}
