@@ -93,8 +93,9 @@ class CustomUserViewSet(UserViewSet):
         methods=['get']
     )
     def subscriptions(self, request):
-        user = self.request.user
-        queryset = user.is_subscribed
+        queryset = User.objects.filter(
+            subscriber__user__id=request.user.id
+        )
         page = self.paginate_queryset(queryset)
         if page is not None:
             serializer = SubscriptionSerializer(
@@ -102,13 +103,13 @@ class CustomUserViewSet(UserViewSet):
             )
             return self.get_paginated_response(serializer.data)
         serializer = SubscriptionSerializer(
-            queryset, many=True, context={'request': request}
+            queryset, many=True
         )
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 class RecipeViewSet(ModelViewSet):
-    queryset = Recipe.objects.all().order_by('-pub_date')
+    queryset = Recipe.objects.select_related('author')
     permission_classes = (AuthorOrReadOnly,)
     pagination_class = PageLimitPagination
     filter_backends = (DjangoFilterBackend,)
