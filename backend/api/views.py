@@ -80,7 +80,10 @@ class CustomUserViewSet(UserViewSet):
             )
         if not subscription.exists():
             return Response(
-                {'errors': 'You are not subscribed to the user'},
+                {
+                    'errors':
+                    f'You are not subscribed to the user {author}, {user}'
+                },
                 status=status.HTTP_400_BAD_REQUEST
             )
         subscription.delete()
