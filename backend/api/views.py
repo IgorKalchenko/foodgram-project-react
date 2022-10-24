@@ -42,7 +42,7 @@ class CustomUserViewSet(UserViewSet):
     pagination_class = PageLimitPagination
 
     def get_serializer_class(self):
-        if self.method in ('create', 'update', 'partial_update'):
+        if self.action in ('create', 'update', 'partial_update'):
             return CustomUserCreateSerializer
         return CustomUserSerializer
 
