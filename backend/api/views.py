@@ -93,9 +93,8 @@ class CustomUserViewSet(UserViewSet):
         methods=['get']
     )
     def subscriptions(self, request):
-        queryset = User.objects.filter(
-            subscriber__user__id=request.user.id
-        )
+        user = self.request.user
+        queryset = user.is_subscribed.all()
         page = self.paginate_queryset(queryset)
         if page is not None:
             serializer = SubscriptionSerializer(
@@ -103,7 +102,7 @@ class CustomUserViewSet(UserViewSet):
             )
             return self.get_paginated_response(serializer.data)
         serializer = SubscriptionSerializer(
-            queryset, many=True
+            queryset, many=True, context={'request': request}
         )
         return Response(serializer.data, status=status.HTTP_200_OK)
 
