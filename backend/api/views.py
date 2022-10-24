@@ -78,7 +78,7 @@ class CustomUserViewSet(UserViewSet):
             return Response(
                 serializer.data, status=status.HTTP_201_CREATED
             )
-        if not subscription.exists():
+        if subscription.exists():
             return Response(
                 {
                     'errors':
