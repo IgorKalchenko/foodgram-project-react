@@ -82,7 +82,7 @@ class CustomUserViewSet(UserViewSet):
             return Response(
                 {
                     'errors':
-                    f'You are not subscribed to the user {author}, {user}'
+                    f'You are not subscribed to the user {author.id}, {user.id}'
                 },
                 status=status.HTTP_400_BAD_REQUEST
             )
