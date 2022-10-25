@@ -13,7 +13,7 @@ from users.models import Subscription
 from .filters import IngredientFilter, RecipeFilter
 from .paginators import PageLimitPagination
 from .permissions import AuthorOrReadOnly
-from .serializers import (CustomUserCreateSerializer, CustomUserSerializer,
+from .serializers import (CustomUserSerializer,
                           IngredientSerializer, RecipeCreateUpdateSerializer,
                           RecipeGetSerializer, RecipeShortSerializer,
                           SubscriptionSerializer, TagSerializer)
@@ -41,11 +41,7 @@ class IngredientViewSet(ReadOnlyModelViewSet):
 class CustomUserViewSet(UserViewSet):
     pagination_class = PageLimitPagination
     lookup_url_kwarg = 'id'
-
-    def get_serializer_class(self):
-        if self.action in ('create', 'update', 'partial_update'):
-            return CustomUserCreateSerializer
-        return CustomUserSerializer
+    serializer_class = CustomUserSerializer
 
     @action(
         detail=True,
