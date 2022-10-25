@@ -55,10 +55,10 @@ class CustomUserViewSet(UserViewSet):
         user = self.request.user
         author = get_object_or_404(User, id=id)
         subscription = Subscription.objects.filter(
-            user=user.id,
-            is_subscribed=author.id
+            user=user,
+            is_subscribed=author
         )
-        if request.method == 'post':
+        if request.method == 'POST':
             if user == author:
                 return Response(
                     {'errors': 'It\'s not allowed to subscribe to yourself.'},
@@ -70,11 +70,9 @@ class CustomUserViewSet(UserViewSet):
                     status=status.HTTP_400_BAD_REQUEST
                 )
             Subscription.objects.create(
-                user=user.id, is_subscribed=author.id
+                user=user, is_subscribed=author
             )
-            serializer = CustomUserSerializer(
-                author, context={'request': request}
-            )
+            serializer = CustomUserSerializer(author)
             return Response(
                 serializer.data, status=status.HTTP_201_CREATED
             )
@@ -83,7 +81,7 @@ class CustomUserViewSet(UserViewSet):
                 {
                     'errors':
                     'You are not subscribed to the '
-                    f'user {author.id}, {user.id}'
+                    f'user {subscription}'
                 },
                 status=status.HTTP_400_BAD_REQUEST
             )
