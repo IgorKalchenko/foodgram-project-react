@@ -13,10 +13,10 @@ from users.models import Subscription
 from .filters import IngredientFilter, RecipeFilter
 from .paginators import PageLimitPagination
 from .permissions import AuthorOrReadOnly
-from .serializers import (CustomUserSerializer,
-                          IngredientSerializer, RecipeCreateUpdateSerializer,
-                          RecipeGetSerializer, RecipeShortSerializer,
-                          SubscriptionSerializer, TagSerializer)
+from .serializers import (CustomUserSerializer, IngredientSerializer,
+                          RecipeCreateUpdateSerializer, RecipeGetSerializer,
+                          RecipeShortSerializer, SubscriptionSerializer,
+                          TagSerializer)
 from .services import download_cart
 
 User = get_user_model()
