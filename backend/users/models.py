@@ -48,23 +48,23 @@ class Subscription(models.Model):
         null=True,
         related_name='subscriber'
     )
-    is_subscribed = models.ForeignKey(
+    author = models.ForeignKey(
         CustomUser,
         on_delete=models.CASCADE,
         null=True,
-        related_name='is_subscribed'
+        related_name='author'
     )
 
     class Meta:
         constraints = [
             models.UniqueConstraint(
-                fields=['user', 'is_subscribed'],
+                fields=['user', 'author'],
                 name='subscribe_constraints'
             )
         ]
 
     def __str__(self):
-        return '{user} is subscribed to {is_subscribed}'.format(
+        return '{user} is subscribed to {author}'.format(
             user=self.user,
-            is_subscribed=self.is_subscribed
+            author=self.author
         )

@@ -10,8 +10,8 @@ class UserAdmin(admin.ModelAdmin):
 
 
 class SubscriptionAdmin(admin.ModelAdmin):
-    list_display = ('user', 'is_subscribed')
-    list_filter = ('user', 'is_subscribed')
+    list_display = ('user', 'author')
+    list_filter = ('user', 'author')
 
 
 admin.site.register(CustomUser, UserAdmin)

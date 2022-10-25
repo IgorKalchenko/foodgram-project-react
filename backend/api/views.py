@@ -52,7 +52,7 @@ class CustomUserViewSet(UserViewSet):
         author = get_object_or_404(User, id=id)
         subscription = Subscription.objects.filter(
             user=user,
-            is_subscribed=author
+            author=author
         )
         if request.method == 'POST':
             if user == author:
@@ -66,7 +66,7 @@ class CustomUserViewSet(UserViewSet):
                     status=status.HTTP_400_BAD_REQUEST
                 )
             Subscription.objects.create(
-                user=user, is_subscribed=author
+                user=user, author=author
             )
             serializer = CustomUserSerializer(author)
             return Response(
