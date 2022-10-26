@@ -51,19 +51,10 @@ class CustomUserViewSet(UserViewSet):
         user = request.user
         author_id = kwargs.get('id')
         author = get_object_or_404(User, id=author_id)
-        subscription = Subscription.objects.filter(
-            user=user,
-            author=author
-        )
         if request.method == 'POST':
             if user == author:
                 return Response(
                     {'errors': 'It\'s not allowed to subscribe to yourself.'},
-                    status=status.HTTP_400_BAD_REQUEST
-                )
-            elif subscription.exists():
-                return Response(
-                    {'errors': 'You are already subscribed to the user'},
                     status=status.HTTP_400_BAD_REQUEST
                 )
             serializer = SubscriptionSerializer(
@@ -73,24 +64,17 @@ class CustomUserViewSet(UserViewSet):
             Subscription.objects.create(
                 user=user, author=author
             )
-            serializer = SubscriptionSerializer(
-                author,
-                context={'request': request},
-            )
             return Response(
                 serializer.data, status=status.HTTP_201_CREATED
             )
-        if not subscription.exists():
-            return Response(
-                {
-                    'errors':
-                    'You are not subscribed to the '
-                    f'user {subscription}'
-                },
-                status=status.HTTP_400_BAD_REQUEST
+        elif request.method == 'DELETE':
+            subscription = get_object_or_404(
+                Subscription,
+                user=user,
+                author=author
             )
-        subscription.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+            subscription.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
 
     @action(
         detail=False,
@@ -99,7 +83,7 @@ class CustomUserViewSet(UserViewSet):
     )
     def subscriptions(self, request):
         queryset = User.objects.filter(
-            subscriber__user__id=request.user.id
+            subscriber__user=request.user
         )
         page = self.paginate_queryset(queryset)
         if page is not None:
