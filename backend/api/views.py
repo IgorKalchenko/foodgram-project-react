@@ -84,15 +84,10 @@ class CustomUserViewSet(UserViewSet):
             subscriber__user=request.user
         )
         page = self.paginate_queryset(queryset)
-        if page is not None:
-            serializer = SubscriptionSerializer(
-                page, many=True, context={'request': request}
-            )
-            return self.get_paginated_response(serializer.data)
         serializer = SubscriptionSerializer(
-            queryset, many=True
+            page, many=True, context={'request': request}
         )
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        return self.get_paginated_response(serializer.data)
 
 
 class RecipeViewSet(ModelViewSet):
