@@ -40,16 +40,17 @@ class IngredientViewSet(ReadOnlyModelViewSet):
 
 class CustomUserViewSet(UserViewSet):
     pagination_class = PageLimitPagination
-    lookup_url_kwarg = 'id'
     serializer_class = CustomUserSerializer
+    queryset = User.objects.all()
 
     @action(
         detail=True,
         methods=['post', 'delete']
     )
-    def subscribe(self, request, id):
-        user = self.request.user
-        author = get_object_or_404(User, id=id)
+    def subscribe(self, request, **kwargs):
+        user = request.user
+        author_id = kwargs.get('id')
+        author = get_object_or_404(User, id=author_id)
         subscription = Subscription.objects.filter(
             user=user,
             author=author
@@ -65,10 +66,14 @@ class CustomUserViewSet(UserViewSet):
                     {'errors': 'You are already subscribed to the user'},
                     status=status.HTTP_400_BAD_REQUEST
                 )
+            serializer = SubscriptionSerializer(
+                author,
+                context={'request': request},
+            )
             Subscription.objects.create(
                 user=user, author=author
             )
-            serializer = CustomUserSerializer(
+            serializer = SubscriptionSerializer(
                 author,
                 context={'request': request},
             )
