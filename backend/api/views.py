@@ -67,14 +67,13 @@ class CustomUserViewSet(UserViewSet):
             return Response(
                 serializer.data, status=status.HTTP_201_CREATED
             )
-        elif request.method == 'DELETE':
-            subscription = get_object_or_404(
-                Subscription,
-                user=user,
-                author=author
-            )
-            subscription.delete()
-            return Response(status=status.HTTP_204_NO_CONTENT)
+        subscription = get_object_or_404(
+            Subscription,
+            user=user,
+            author=author
+        )
+        subscription.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
     @action(
         detail=False,
