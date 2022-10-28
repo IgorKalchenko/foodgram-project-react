@@ -17,7 +17,7 @@ class Command(BaseCommand):
         if answer == 'y':
             Ingredient.objects.all().delete()
         elif answer == 'n':
-            return 'The operation is skipped.'
+            self.stdout.write('The operation is skipped.')
         else:
             return 'Invalid value.'
         with open(

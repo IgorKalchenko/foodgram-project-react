@@ -5,7 +5,9 @@ from djoser.views import UserViewSet
 from recipes.models import Favorite, Ingredient, Recipe, ShoppingCart, Tag
 from rest_framework import status
 from rest_framework.decorators import action
-from rest_framework.permissions import SAFE_METHODS, AllowAny, IsAuthenticated
+from rest_framework.permissions import (SAFE_METHODS, AllowAny,
+                                        IsAuthenticated,
+                                        IsAuthenticatedOrReadOnly)
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
 from users.models import Subscription
@@ -41,7 +43,7 @@ class IngredientViewSet(ReadOnlyModelViewSet):
 class CustomUserViewSet(UserViewSet):
     pagination_class = PageLimitPagination
     queryset = User.objects.all()
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticatedOrReadOnly]
 
     def get_serializer_class(self):
         if self.action in ('create', 'update', 'partial_update'):
@@ -50,6 +52,7 @@ class CustomUserViewSet(UserViewSet):
 
     @action(
         detail=True,
+        permission_classes=(IsAuthenticated,),
         methods=['post', 'delete']
     )
     def subscribe(self, request, **kwargs):
@@ -66,7 +69,7 @@ class CustomUserViewSet(UserViewSet):
                     {'errors': 'It\'s not allowed to subscribe to yourself.'},
                     status=status.HTTP_400_BAD_REQUEST
                 )
-            elif subscription.exists():
+            if subscription.exists():
                 return Response(
                     {'errors': 'You are already subscribed to the user'},
                     status=status.HTTP_400_BAD_REQUEST
@@ -138,7 +141,7 @@ class RecipeViewSet(ModelViewSet):
             return Response(
                 serializer.data, status=status.HTTP_201_CREATED
             )
-        elif request.method == 'DELETE':
+        if request.method == 'DELETE':
             if current_object.exists():
                 current_object.delete()
                 return Response(status=status.HTTP_204_NO_CONTENT)
