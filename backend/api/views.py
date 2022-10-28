@@ -13,10 +13,10 @@ from users.models import Subscription
 from .filters import IngredientFilter, RecipeFilter
 from .paginators import PageLimitPagination
 from .permissions import AuthorOrReadOnly
-from .serializers import (CustomUserSerializer, IngredientSerializer,
-                          RecipeCreateUpdateSerializer, RecipeGetSerializer,
-                          RecipeShortSerializer, SubscriptionSerializer,
-                          TagSerializer)
+from .serializers import (CustomUserCreateSerializer, CustomUserSerializer,
+                          IngredientSerializer, RecipeCreateUpdateSerializer,
+                          RecipeGetSerializer, RecipeShortSerializer,
+                          SubscriptionSerializer, TagSerializer)
 from .services import download_cart
 
 User = get_user_model()
@@ -40,8 +40,13 @@ class IngredientViewSet(ReadOnlyModelViewSet):
 
 class CustomUserViewSet(UserViewSet):
     pagination_class = PageLimitPagination
-    serializer_class = CustomUserSerializer
     queryset = User.objects.all()
+    permission_classes = [IsAuthenticated]
+
+    def get_serializer_class(self):
+        if self.action in ('create', 'update', 'partial_update'):
+            return CustomUserCreateSerializer
+        return CustomUserSerializer
 
     @action(
         detail=True,
