@@ -43,7 +43,7 @@ class IngredientViewSet(ReadOnlyModelViewSet):
 class CustomUserViewSet(UserViewSet):
     pagination_class = PageLimitPagination
     queryset = User.objects.all()
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticatedOrReadOnly]
 
     def get_serializer_class(self):
         if self.action in ('create', 'update', 'partial_update'):
@@ -94,7 +94,7 @@ class CustomUserViewSet(UserViewSet):
 
     @action(
         detail=False,
-        permission_classes=[IsAuthenticatedOrReadOnly],
+        permission_classes=[IsAuthenticated],
         methods=['get']
     )
     def subscriptions(self, request):
