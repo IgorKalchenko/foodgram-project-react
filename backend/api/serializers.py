@@ -184,9 +184,10 @@ class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
                 raise serializers.ValidationError(
                     'Amount must be greater than 0'
                 )
-            ingredient = get_object_or_404(Ingredient, id=ing['id'])
+            # ingredient = get_object_or_404(Ingredient, id=ing['id'])
+            id = ing['id']
             raise serializers.ValidationError(
-                f'You have repeated ingredients: {ingredient}'
+                f'You have repeated ingredients: {id}'
             )
             # ing_in_recipe.append(ingredient)
         return data
