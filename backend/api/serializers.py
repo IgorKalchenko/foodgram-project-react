@@ -178,7 +178,7 @@ class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError(
                 '"Ingredients" field must be filled out.'
             )
-        ing_in_recipe = []
+        # ing_in_recipe = []
         for ing in data['ingredients']:
             if int(ing['amount']) <= 0:
                 raise serializers.ValidationError(
