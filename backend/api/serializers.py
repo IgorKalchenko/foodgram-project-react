@@ -178,18 +178,18 @@ class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError(
                 '"Ingredients" field must be filled out.'
             )
-        # ing_in_recipe = []
+        ing_in_recipe = []
         for ing in data['ingredients']:
             if int(ing['amount']) <= 0:
                 raise serializers.ValidationError(
                     'Amount must be greater than 0'
                 )
-            # ingredient = get_object_or_404(Ingredient, id=ing['id'])
             id = ing['id']
-            raise serializers.ValidationError(
-                f'You have repeated ingredients: {id}'
-            )
-            # ing_in_recipe.append(ingredient)
+            if id in ing_in_recipe:
+                raise serializers.ValidationError(
+                    f'You have repeated ingredients: {id}'
+                )
+            ing_in_recipe.append(id)
         return data
 
     @classmethod
