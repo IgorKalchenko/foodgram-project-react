@@ -101,12 +101,12 @@ class CustomUserViewSet(UserViewSet):
         queryset = User.objects.filter(
             subscriber__user=request.user
         )
-        page = self.paginate_queryset(queryset)
-        if page is not None:
-            serializer = SubscriptionSerializer(
-                page, many=True, context={'request': request}
-            )
-            return self.get_paginated_response(serializer.data)
+        # page = self.paginate_queryset(queryset)
+        # if page is not None:
+        #     serializer = SubscriptionSerializer(
+        #         page, many=True, context={'request': request}
+        #     )
+        #     return self.get_paginated_response(serializer.data)
         serializer = SubscriptionSerializer(
             queryset, many=True
         )
