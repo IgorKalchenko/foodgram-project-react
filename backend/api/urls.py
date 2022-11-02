@@ -12,7 +12,10 @@ router.register('ingredients', IngredientViewSet, basename='ingredients')
 router.register('users', CustomUserViewSet, basename='users')
 router.register('recipes', RecipeViewSet, basename='recipes')
 
+subscriptions = CustomUserViewSet.as_view({'get': 'subscriptions', })
+
 urlpatterns = (
+    path('users/subscriptions/', subscriptions, name='subscriptions'),
     path('auth/', include('djoser.urls.authtoken')),
     path('', include('djoser.urls')),
     path('', include(router.urls)),
