@@ -181,7 +181,7 @@ class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
             )
         # ing_in_recipe = []
         for ing in data['ingredients']:
-            raise serializers.ValidationError(ing)
+            raise serializers.ValidationError(ing['id'])
             # if int(ing['amount']) <= 0:
             #     raise serializers.ValidationError(
             #         'Amount must be greater than 0'
