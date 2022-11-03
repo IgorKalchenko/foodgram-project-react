@@ -44,6 +44,8 @@ class CustomUserViewSet(UserViewSet):
     pagination_class = PageLimitPagination
     queryset = User.objects.all()
     permission_classes = [IsAuthenticatedOrReadOnly]
+    lookup_field = 'id'
+    lookup_url_kwarg = 'id'
 
     def get_serializer_class(self):
         if self.action in ('create', 'update', 'partial_update'):
