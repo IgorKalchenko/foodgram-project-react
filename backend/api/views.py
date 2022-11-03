@@ -101,7 +101,7 @@ class CustomUserViewSet(UserViewSet):
     )
     def subscriptions(self, request):
         queryset = User.objects.filter(
-            subscriber__user=request.user
+            subscriber=request.user
         )
         page = self.paginate_queryset(queryset)
         if page is not None:
