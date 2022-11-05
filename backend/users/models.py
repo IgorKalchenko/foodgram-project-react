@@ -3,6 +3,7 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 
 from .managers import CustomUserManager
+from api.validators import OnlyLettersValidator
 
 
 class CustomUser(AbstractUser):
@@ -21,12 +22,14 @@ class CustomUser(AbstractUser):
     first_name = models.CharField(
         _('first name'),
         max_length=150,
-        blank=False
+        blank=False,
+        validators=[OnlyLettersValidator]
     )
     last_name = models.CharField(
         _('last name'),
         max_length=150,
-        blank=False
+        blank=False,
+        validators=[OnlyLettersValidator]
     )
     password = models.CharField(
         verbose_name=_('password'),

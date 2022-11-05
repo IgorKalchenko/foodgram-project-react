@@ -17,7 +17,7 @@ class RecipeFilter(FilterSet):
         field_name='tags__slug',
         to_field_name='slug'
     )
-    author = AllValuesMultipleFilter(field_name='author__username')
+    author = NumberFilter()
 
     def filter_is_favorited(self, queryset, name, value):
         if value and not self.request.user.is_anonymous:

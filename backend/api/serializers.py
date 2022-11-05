@@ -17,8 +17,8 @@ class CustomUserSerializer(UserSerializer):
     class Meta:
         model = User
         fields = (
-            'email',
             'id',
+            'email',
             'username',
             'first_name',
             'last_name',
@@ -99,6 +99,7 @@ class TagSerializer(serializers.ModelSerializer):
 
 
 class RecipeGetSerializer(serializers.ModelSerializer):
+    id = serializers.IntegerField()
     image = Base64ImageField()
     ingredients = RecipeIngredientGetSerializer(
         source='recipe_amount', many=True

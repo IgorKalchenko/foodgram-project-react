@@ -24,17 +24,20 @@ class Tag(models.Model):
     name = models.CharField(
         max_length=200,
         unique=True,
+        blank=False,
         verbose_name='Название'
     )
     color = models.CharField(
         max_length=7,
         null=True,
+        blank=False,
         unique=True,
         verbose_name='Цвет в HEX'
     )
     slug = models.SlugField(
         max_length=200,
         null=True,
+        blank=False,
         unique=True,
         verbose_name='Уникальный слаг'
     )
@@ -51,42 +54,50 @@ class Tag(models.Model):
 class Recipe(models.Model):
     author = models.ForeignKey(
         User,
+        blank=False,
         on_delete=models.CASCADE,
         related_name='recipes'
     )
     name = models.CharField(
         max_length=200,
+        blank=False,
         verbose_name='Название',
         help_text='Название рецепта'
     )
     image = models.ImageField(
         verbose_name=_('Image'),
+        blank=False,
         help_text='Изображение для рецепта',
         upload_to='recipes/'
     )
     text = models.TextField(
         verbose_name=_('Text'),
+        blank=False,
         help_text='Текст рецепта'
     )
     ingredients = models.ManyToManyField(
         Ingredient,
         through='RecipeIngredient',
+        blank=False,
         related_name='recipes',
         verbose_name=_('Ingredients')
     )
     tags = models.ManyToManyField(
         Tag,
         through='RecipeTag',
+        blank=False,
         related_name='recipes',
         verbose_name=_('Tags')
     )
     cooking_time = models.PositiveIntegerField(
         verbose_name='Время приготовления',
+        blank=False,
         help_text='Время приготовления в минутах',
         validators=(MinValueValidator(1),)
     )
     pub_date = models.DateTimeField(
         verbose_name='Дата публикации',
+        blank=False,
         auto_now_add=True
     )
 
