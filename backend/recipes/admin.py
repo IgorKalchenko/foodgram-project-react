@@ -9,10 +9,12 @@ User = get_user_model()
 
 class RecipeIngredientInline(admin.TabularInline):
     model = RecipeIngredient
+    min_num = 1
 
 
 class RecipeTagInline(admin.TabularInline):
     model = RecipeTag
+    min_num = 1
 
 
 class RecipeAdmin(admin.ModelAdmin):
