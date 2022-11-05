@@ -109,13 +109,16 @@ class RecipeIngredient(models.Model):
     recipe = models.ForeignKey(
         Recipe,
         related_name='recipe_amount',
+        blank=False,
         on_delete=models.CASCADE)
     ingredients = models.ForeignKey(
         Ingredient,
         related_name='ingredients_amount',
+        blank=False,
         on_delete=models.CASCADE)
     amount = models.PositiveIntegerField(
         verbose_name=_('amount'),
+        blank=False,
         validators=(MinValueValidator(1),)
     )
 
@@ -132,8 +135,16 @@ class RecipeIngredient(models.Model):
 
 
 class RecipeTag(models.Model):
-    recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
-    tag = models.ForeignKey(Tag, on_delete=models.CASCADE)
+    recipe = models.ForeignKey(
+        Recipe,
+        on_delete=models.CASCADE,
+        blank=False
+    )
+    tag = models.ForeignKey(
+        Tag,
+        on_delete=models.CASCADE,
+        blank=False
+    )
 
     def __str__(self):
         return f'{self.recipe} {self.tag}'
