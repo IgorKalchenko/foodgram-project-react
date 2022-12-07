@@ -1,34 +1,84 @@
-# praktikum_new_diplom
-Сайт с проектом: http://51.250.110.182/
-Работает всё кроме страниц: 
-* http://51.250.110.182/subscriptions
-* http://51.250.110.182/user/1
+![workflow](https://github.com/IgorKalchenko/foodgram-project-react/actions/workflows/main.yml/badge.svg)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-Получилось настроить механизм подписок. Пермишены скорректировал. Комментарии .
-По прежнему не работают 2 вышеуказанных урла.
-Данные для входа в админку:
-email: admin@admin.com
-password: admin
-Логи по ошибкам в контейнере бэка выглядят минималистично:
-igorkalchenko-web-1  | Not Found: /api/users/subscriptions/
-igorkalchenko-web-1  | Bad Request: /api/recipes/
-В консоле разработчика:
+# О проекте
 
-http://51.250.110.182/user/1:
-{author: Array(1)}
-author
-: 
-['Выберите корректный вариант. 1 нет среди допустимых значений.']
-[[Prototype]]
-: 
-Object
+Cайт Foodgram, «Продуктовый помощник». На этом сервисе пользователи могут:
+* публиковать рецепты,
+* подписываться на публикации других пользователей,
+* добавлять понравившиеся рецепты в список «Избранное»,
+* скачивать сводный список продуктов, необходимых для приготовления одного или нескольких выбранных блюд. 
 
-http://51.250.110.182/subscriptions:
-/subscriptions:1 Uncaught (in promise) 
-{detail: 'Страница не найдена.'}
-detail
-: 
-"Страница не найдена."
-[[Prototype]]
-: 
-Object
+Проект доступен по [адресу](http://51.250.110.182/)
+
+# Технологии
+
+Backend:
+
+* Python
+* Django
+* Djnago REST framework
+* Docker/Docker-compose
+* Nginx
+* Gunicorn
+
+Frontend:
+
+* JavaScript
+* React
+
+# Описание команд для запуска проекта
+
+
+Клонировать репозиторий и перейти в него в командной строке:
+
+```
+git clone https://github.com/IgorKalchenko/yamdb_final.git
+```
+
+```
+cd yamdb_final
+```
+Перейти в директорию 'infra':
+
+```
+cd infra
+```
+
+Соберать контейнеры:
+
+```
+docker-compose up -d
+```
+
+Выполнить миграции
+
+```
+docker-compose exec web python manage.py migrate
+```
+
+Создать суперпользователя:
+
+```
+docker-compose exec web python manage.py createsuperuser
+```
+
+Собрать статику:
+
+```
+docker-compose exec web python manage.py collectstatic --no-input
+```
+
+Для загрузки тестовой базы данных выполните команду и подтвердите отчистку базы данных:
+
+```
+docker-compose exec web python manage.py import_ingredients
+```
+
+```
+Y
+```
+
+## Автор
+
+[Игорь Кальченко](https://github.com/IgorKalchenko)
