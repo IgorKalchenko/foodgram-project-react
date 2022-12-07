@@ -11,6 +11,10 @@ User = get_user_model()
 
 
 class CustomUserSerializer(UserSerializer):
+    '''
+    Serializer to handle User instances with
+    list and retrieve ViewSet methods.
+    '''
     is_subscribed = serializers.SerializerMethodField()
     id = serializers.IntegerField()
 
@@ -35,12 +39,16 @@ class CustomUserSerializer(UserSerializer):
 
 
 class CustomUserCreateSerializer(UserCreateSerializer):
+    '''
+    Serializer to handle User instances with
+    create, update and partial_update ViewSet methods.
+    '''
 
     class Meta:
         model = User
         fields = (
-            'email',
             'id',
+            'email',
             'username',
             'first_name',
             'last_name',
@@ -63,6 +71,10 @@ class CustomUserCreateSerializer(UserCreateSerializer):
 
 
 class IngredientSerializer(serializers.ModelSerializer):
+    '''
+    The serializer handles Ingredient model instances.
+    It's used in IngredientViewSet.
+    '''
 
     class Meta:
         model = Ingredient
@@ -71,6 +83,7 @@ class IngredientSerializer(serializers.ModelSerializer):
 
 
 class RecipeIngredientGetSerializer(serializers.ModelSerializer):
+    '''Handles ingredient data inside RecipeGetSerializer.'''
     id = serializers.IntegerField(source='ingredients.id')
     name = serializers.CharField(source='ingredients.name')
     measurement_unit = serializers.CharField(
@@ -83,6 +96,7 @@ class RecipeIngredientGetSerializer(serializers.ModelSerializer):
 
 
 class IngredientToRecipeSerializer(serializers.ModelSerializer):
+    '''Handles ingredient data inside RecipeCreateUpdateSerializer.'''
     id = serializers.IntegerField()
 
     class Meta:
@@ -91,6 +105,10 @@ class IngredientToRecipeSerializer(serializers.ModelSerializer):
 
 
 class TagSerializer(serializers.ModelSerializer):
+    '''
+    The serializer handles Tag model instances.
+    It's used in TagViewSet and RecipeGetSerializer.
+    '''
 
     class Meta:
         model = Tag
@@ -99,6 +117,11 @@ class TagSerializer(serializers.ModelSerializer):
 
 
 class RecipeGetSerializer(serializers.ModelSerializer):
+    '''
+    Serializer to handle Recipe instances
+    if the request method is one of the 'safe' methods:
+    GET, HEAD or OPTIONS.
+    '''
     id = serializers.IntegerField()
     image = Base64ImageField()
     ingredients = RecipeIngredientGetSerializer(
@@ -135,6 +158,10 @@ class RecipeGetSerializer(serializers.ModelSerializer):
 
 
 class RecipeShortSerializer(serializers.ModelSerializer):
+    '''
+    Serializer to handle Recipe instances
+    within SubscriptionSerializer.
+    '''
     image = Base64ImageField()
 
     class Meta:
@@ -144,6 +171,10 @@ class RecipeShortSerializer(serializers.ModelSerializer):
 
 
 class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
+    '''
+    Serializer to handle Recipe instances
+    if the request method is not one of the 'safe' methods.
+    '''
     image = Base64ImageField()
     ingredients = IngredientToRecipeSerializer(many=True)
     tags = serializers.ListField(
@@ -247,6 +278,11 @@ class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
 
 
 class SubscriptionSerializer(CustomUserSerializer):
+    '''
+    The serializer to manage and handle
+    'subscribe' and 'subscriptions' methods
+    within CustomUserViewSet.
+    '''
     recipes = RecipeShortSerializer(many=True, read_only=True)
     recipes_count = serializers.SerializerMethodField()
 

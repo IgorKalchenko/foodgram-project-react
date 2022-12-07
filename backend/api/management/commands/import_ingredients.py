@@ -5,6 +5,9 @@ from recipes.models import Ingredient
 
 
 class Command(BaseCommand):
+    """
+    Command that imports ingredients into db from a data file.
+    """
     help = 'Import data from csv-file.'
 
     def add_arguments(self, parser):

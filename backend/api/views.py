@@ -25,6 +25,11 @@ User = get_user_model()
 
 
 class TagViewSet(ReadOnlyModelViewSet):
+    '''
+    ViewSet to handle requests to the '.../api/tags/' endpoint.
+    Only read requests are allowed.
+    Permission is given to any user.
+    '''
     queryset = Tag.objects.all().order_by('name')
     serializer_class = TagSerializer
     permission_classes = [AllowAny]
@@ -32,6 +37,11 @@ class TagViewSet(ReadOnlyModelViewSet):
 
 
 class IngredientViewSet(ReadOnlyModelViewSet):
+    '''
+    ViewSet to handle requests to the '.../api/ingredients/' endpoint.
+    Only read requests are allowed.
+    Permission is given to any user.
+    '''
     queryset = Ingredient.objects.all().order_by('name')
     serializer_class = IngredientSerializer
     permission_classes = [AllowAny]
@@ -41,6 +51,11 @@ class IngredientViewSet(ReadOnlyModelViewSet):
 
 
 class CustomUserViewSet(UserViewSet):
+    '''
+    ViewSet to handle requests to the '.../api/users/' endpoint.
+    Permission to read is given to any user.
+    Permission to write is given to authenticated users only.
+    '''
     pagination_class = PageLimitPagination
     queryset = User.objects.all()
     permission_classes = [IsAuthenticatedOrReadOnly]
@@ -116,6 +131,10 @@ class CustomUserViewSet(UserViewSet):
 
 
 class RecipeViewSet(ModelViewSet):
+    '''
+    ViewSet to handle requests to the '.../api/recipes/' endpoint.
+    Permission policy is moderated by a custom permission class.
+    '''
     queryset = Recipe.objects.all().order_by('-pub_date')
     permission_classes = (AuthorOrReadOnly,)
     pagination_class = PageLimitPagination

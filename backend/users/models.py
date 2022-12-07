@@ -7,6 +7,10 @@ from .managers import CustomUserManager
 
 
 class CustomUser(AbstractUser):
+    '''
+    Creates customized User object.
+    Inherits from standart django AbstractUser model.
+    '''
     objects = CustomUserManager()
     email = models.EmailField(
         _('email address'),
@@ -47,6 +51,10 @@ class CustomUser(AbstractUser):
 
 
 class Subscription(models.Model):
+    '''
+    Model that creates Subscription objects.
+    These objects connect users with authors to whom they are subscribed.
+    '''
     user = models.ForeignKey(
         CustomUser,
         on_delete=models.CASCADE,

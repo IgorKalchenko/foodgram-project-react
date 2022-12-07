@@ -7,6 +7,7 @@ User = get_user_model()
 
 
 class Ingredient(models.Model):
+    '''Model for creating ingredient objects.'''
     name = models.CharField(
         max_length=200,
         blank=False,
@@ -23,6 +24,7 @@ class Ingredient(models.Model):
 
 
 class Tag(models.Model):
+    '''Model for creating tag objects.'''
     name = models.CharField(
         max_length=200,
         unique=True,
@@ -54,6 +56,7 @@ class Tag(models.Model):
 
 
 class Recipe(models.Model):
+    '''Model for creating recipe objects.'''
     author = models.ForeignKey(
         User,
         blank=False,
@@ -108,6 +111,10 @@ class Recipe(models.Model):
 
 
 class RecipeIngredient(models.Model):
+    '''
+    Intermediate model that assigns amount
+    to an ingredient in a certain recipe.
+    '''
     recipe = models.ForeignKey(
         Recipe,
         related_name='recipe_amount',
@@ -137,6 +144,10 @@ class RecipeIngredient(models.Model):
 
 
 class RecipeTag(models.Model):
+    '''
+    Intermediate model for ManyToMany relation
+    between Recipe and Tag models.
+    '''
     recipe = models.ForeignKey(
         Recipe,
         on_delete=models.CASCADE,
@@ -161,6 +172,10 @@ class RecipeTag(models.Model):
 
 
 class ShoppingCart(models.Model):
+    '''
+    Model that creates ShoppingCart objects.
+    These objects assingns recipes in cart to users.
+    '''
     user = models.ForeignKey(
         User, on_delete=models.CASCADE,
         related_name='is_in_shopping_cart',
@@ -182,6 +197,10 @@ class ShoppingCart(models.Model):
 
 
 class Favorite(models.Model):
+    '''
+    Model that creates Favorite objects.
+    These objects assingns recipes in favorite section to users.
+    '''
     user = models.ForeignKey(
         User, on_delete=models.CASCADE,
         related_name='is_favorited',
